@@ -1,5 +1,5 @@
 """
-Security middleware and utilities for ProposifyAI
+Security middleware and utilities for DraftCraft Agent
 """
 import re
 import html

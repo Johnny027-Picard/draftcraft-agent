@@ -1,5 +1,5 @@
 """
-Email utilities for ProposifyAI
+Email utilities for DraftCraft Agent
 """
 from flask import current_app, render_template, url_for
 from flask_mail import Mail, Message
@@ -48,7 +48,7 @@ def send_verification_email(user):
     verify_url = url_for('verify_email', token=token, _external=True)
     
     return send_email(
-        subject="Verify your ProposifyAI account",
+        subject="Verify your DraftCraft Agent account",
         recipients=[user.email],
         template='verify_email',
         user=user,
@@ -61,7 +61,7 @@ def send_password_reset_email(user):
     reset_url = url_for('reset_password', token=token, _external=True)
     
     return send_email(
-        subject="Reset your ProposifyAI password",
+        subject="Reset your DraftCraft Agent password",
         recipients=[user.email],
         template='reset_password',
         user=user,
@@ -71,7 +71,7 @@ def send_password_reset_email(user):
 def send_welcome_email(user):
     """Send welcome email to new users"""
     return send_email(
-        subject="Welcome to ProposifyAI!",
+        subject="Welcome to DraftCraft Agent!",
         recipients=[user.email],
         template='welcome',
         user=user
@@ -80,7 +80,7 @@ def send_welcome_email(user):
 def send_upgrade_confirmation_email(user):
     """Send confirmation email for premium upgrade"""
     return send_email(
-        subject="Welcome to ProposifyAI Premium!",
+        subject="Welcome to DraftCraft Agent Premium!",
         recipients=[user.email],
         template='upgrade_confirmation',
         user=user
@@ -89,7 +89,7 @@ def send_upgrade_confirmation_email(user):
 def send_usage_alert_email(user, usage_percentage):
     """Send usage alert email"""
     return send_email(
-        subject=f"ProposifyAI Usage Alert - {usage_percentage}% used",
+        subject=f"DraftCraft Agent Usage Alert - {usage_percentage}% used",
         recipients=[user.email],
         template='usage_alert',
         user=user,
@@ -99,7 +99,7 @@ def send_usage_alert_email(user, usage_percentage):
 def send_monthly_report_email(user, stats):
     """Send monthly usage report"""
     return send_email(
-        subject="Your ProposifyAI Monthly Report",
+        subject="Your DraftCraft Agent Monthly Report",
         recipients=[user.email],
         template='monthly_report',
         user=user,

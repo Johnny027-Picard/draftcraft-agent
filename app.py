@@ -1,5 +1,5 @@
 """
-ProposifyAI - Production-ready Flask application
+DraftCraft Agent - Production-ready Flask application
 """
 import os
 import logging

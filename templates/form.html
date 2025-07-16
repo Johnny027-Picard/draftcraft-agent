@@ -8,6 +8,7 @@
         <h2 class="mb-3 text-primary">Generate a Winning Proposal</h2>
         <p class="mb-4 text-muted">Fill out the form below and let DraftCraft Agent craft a professional freelance proposal for you.</p>
         <form method="POST" action="{{ url_for('generate') }}">
+          {{ csrf_token() }}
           <div class="mb-3">
             <label for="client_name" class="form-label">Client Name</label>
             <input type="text" class="form-control" id="client_name" name="client_name" required>

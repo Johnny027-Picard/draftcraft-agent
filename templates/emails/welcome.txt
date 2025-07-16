@@ -1,10 +1,10 @@
-Welcome to ProposifyAI!
+Welcome to DraftCraft Agent!
 
 🎉 Your Account is Ready!
 
 Hi there!
 
-Welcome to ProposifyAI! You're now ready to start generating professional freelance proposals in seconds.
+Welcome to DraftCraft Agent! You're now ready to start generating professional freelance proposals in seconds.
 
 What you can do now:
 ✅ Generate unlimited proposals with AI
@@ -23,4 +23,4 @@ Need help? Reply to this email or check out our documentation.
 
 Happy proposal writing!
 
-© 2024 ProposifyAI. All rights reserved. 
+© 2024 DraftCraft Agent. All rights reserved. 
