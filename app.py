@@ -411,10 +411,10 @@ def register_routes(app):
 # Create the application instance
 app = create_app()
 
+# Initialize database tables
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    # Create database tables
-    with app.app_context():
-        db.create_all()
-    
     # Run the application
     app.run(debug=app.config.get('DEBUG', False))
