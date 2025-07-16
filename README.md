@@ -1,5 +1,7 @@
 # DraftCraft Agent - Professional Freelance Proposal Generator
 
+*Updated for Render deployment*
+
 A production-ready Flask web application that generates professional freelance proposals using OpenAI's GPT models with comprehensive security, user management, and payment processing.
 
 ## 🚀 Features
