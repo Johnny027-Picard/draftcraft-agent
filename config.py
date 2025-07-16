@@ -93,7 +93,7 @@ class ProductionConfig(Config):
             file_handler.setLevel(logging.INFO)
             app.logger.addHandler(file_handler)
             app.logger.setLevel(logging.INFO)
-            app.logger.info('ProposifyAI startup')
+            app.logger.info('DraftCraft Agent startup')
 
 class TestingConfig(Config):
     """Testing configuration"""
