@@ -7,7 +7,7 @@
       <div class="card-body">
         <h2 class="mb-3 text-primary">Sign Up</h2>
         <form method="POST" action="{{ url_for('register') }}">
-          {{ csrf_token() }}
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="email" name="email" required>
