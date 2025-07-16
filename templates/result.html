@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}ProposifyAI - Your Proposal{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8 col-md-10">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="mb-3 text-success">Your Generated Proposal</h2>
+        <pre class="proposal-text">{{ proposal }}</pre>
+        {% if not current_user.is_premium %}
+        <!-- Ad Placeholder for Free Users -->
+        <div class="my-4 text-center">
+          <div class="ad-placeholder" style="background:#e0e7ef; border-radius:8px; padding:18px; min-height:90px; display:flex; align-items:center; justify-content:center;">
+            <span class="text-muted">[Your Ad Here: Google AdSense or similar]</span>
+          </div>
+        </div>
+        {% endif %}
+        <div class="d-flex justify-content-between mt-4">
+          <a href="{{ url_for('form') }}" class="btn btn-outline-primary">Generate Another</a>
+          <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

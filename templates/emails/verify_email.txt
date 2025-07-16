@@ -1,0 +1,14 @@
+ProposifyAI - Verify Your Email Address
+
+Hi there!
+
+Welcome to ProposifyAI! Please verify your email address to complete your registration.
+
+Verify your email by clicking this link:
+{{ verify_url }}
+
+This link will expire in 24 hours.
+
+If you didn't create an account with ProposifyAI, you can safely ignore this email.
+
+© 2024 ProposifyAI. All rights reserved. 

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}DraftCraft Agent - Generate Proposal{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7 col-md-9">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="mb-3 text-primary">Generate a Winning Proposal</h2>
+        <p class="mb-4 text-muted">Fill out the form below and let DraftCraft Agent craft a professional freelance proposal for you.</p>
+        <form method="POST" action="{{ url_for('generate') }}">
+          <div class="mb-3">
+            <label for="client_name" class="form-label">Client Name</label>
+            <input type="text" class="form-control" id="client_name" name="client_name" required>
+          </div>
+          <div class="mb-3">
+            <label for="job_description" class="form-label">Job Description</label>
+            <textarea class="form-control" id="job_description" name="job_description" rows="4" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="skills" class="form-label">Skills to Highlight</label>
+            <input type="text" class="form-control" id="skills" name="skills" placeholder="e.g. Python, Flask, API integration" required>
+          </div>
+          <div class="mb-3">
+            <label for="tier" class="form-label">Plan</label>
+            <select class="form-select" id="tier" name="tier">
+              <option value="starter">Starter (GPT-3.5, Free)</option>
+              <option value="premium">Premium (GPT-4, Unlimited)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Generate Proposal</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
