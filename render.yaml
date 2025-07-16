@@ -12,9 +12,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: draftcraft-db
-          property: connectionString
+        value: postgresql://draftcraft:mzuOhJ0Ll5svuNlfgTjA5XTxKPlwLvuJ@dpg-d1riisali9vc73b9948g-a.ohio-postgres.render.com/draftcraft
       - key: OPENAI_API_KEY
         sync: false
       - key: STRIPE_PUBLIC_KEY
