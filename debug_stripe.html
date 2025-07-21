@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stripe Debug</title>
+</head>
+<body>
+    <h1>Stripe Configuration Debug</h1>
+    
+    <div id="debug-info">
+        <h2>Debug Information:</h2>
+        <p id="stripe-key-status">Checking Stripe key...</p>
+        <p id="button-status">Checking button...</p>
+        <p id="console-output">Console output will appear here...</p>
+    </div>
+    
+    <button id="test-button">Test Stripe Integration</button>
+    
+    <script>
+        // Debug function to capture console output
+        const originalLog = console.log;
+        const originalError = console.error;
+        const output = document.getElementById('console-output');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            output.innerHTML += '<br>LOG: ' + args.join(' ');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            output.innerHTML += '<br>ERROR: ' + args.join(' ');
+        };
+        
+        // Test Stripe key
+        const stripeKey = '{{ stripe_public_key }}';
+        const keyStatus = document.getElementById('stripe-key-status');
+        
+        if (stripeKey && stripeKey !== 'None' && stripeKey !== '') {
+            keyStatus.innerHTML = '✅ Stripe key found: ' + stripeKey.substring(0, 10) + '...';
+        } else {
+            keyStatus.innerHTML = '❌ Stripe key missing or empty';
+        }
+        
+        // Test button
+        const button = document.getElementById('test-button');
+        const buttonStatus = document.getElementById('button-status');
+        
+        if (button) {
+            buttonStatus.innerHTML = '✅ Test button found';
+        } else {
+            buttonStatus.innerHTML = '❌ Test button not found';
+        }
+        
+        // Test Stripe integration
+        button.addEventListener('click', function() {
+            console.log('Button clicked!');
+            
+            if (typeof Stripe === 'undefined') {
+                console.error('Stripe.js not loaded');
+                return;
+            }
+            
+            try {
+                const stripe = Stripe(stripeKey);
+                console.log('Stripe initialized successfully');
+                
+                // Test checkout session creation
+                fetch("/create-checkout-session", { 
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then((res) => {
+                    console.log('Response status:', res.status);
+                    return res.json();
+                })
+                .then((data) => {
+                    console.log('Checkout session data:', data);
+                    if (data.id) {
+                        console.log('Redirecting to checkout...');
+                        stripe.redirectToCheckout({ sessionId: data.id });
+                    } else {
+                        console.error('No session ID in response:', data);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Fetch error:', error);
+                });
+                
+            } catch (error) {
+                console.error('Stripe initialization error:', error);
+            }
+        });
+    </script>
+</body>
+</html> 

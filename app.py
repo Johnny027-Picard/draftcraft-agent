@@ -351,6 +351,12 @@ def register_routes(app):
         return render_template('pricing.html', 
                              stripe_public_key=app.config.get('STRIPE_PUBLIC_KEY'))
     
+    @app.route('/debug-stripe')
+    def debug_stripe():
+        """Debug Stripe configuration"""
+        return render_template('debug_stripe.html', 
+                             stripe_public_key=app.config.get('STRIPE_PUBLIC_KEY'))
+    
     @app.route('/create-checkout-session', methods=['POST'])
     @login_required
     def create_checkout_session():

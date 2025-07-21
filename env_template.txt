@@ -1,0 +1,23 @@
+# Copy this file to .env and fill in your actual values
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Stripe Configuration
+STRIPE_PUBLIC_KEY=your_stripe_public_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+STRIPE_PREMIUM_PRICE_ID=your_stripe_price_id
+
+# Email Configuration
+SENDGRID_API_KEY=your_sendgrid_api_key
+
+# Flask Configuration
+SECRET_KEY=your_flask_secret_key
+
+# Database Configuration
+DATABASE_URL=your_database_url
+
+# Other Configuration
+FLASK_ENV=development
+DEBUG=True 
