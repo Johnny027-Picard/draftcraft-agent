@@ -15,25 +15,29 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 # Import our modules
 from config import get_config, get_openai_api_key
 from models import db, User, Proposal
-from security import init_security, sanitize_input, validate_email, validate_password, log_security_event
+from security import init_security, sanitize_input, validate_email, validate_password, limiter, get_remote_address
 from email_utils import mail, send_verification_email, send_welcome_email, send_password_reset_email
 from gpt_utils import generate_proposal
+from email_sender import EmailSender
 
 # Initialize Sentry for error tracking
-if os.environ.get('SENTRY_DSN'):
+sentry_dsn = os.environ.get('SENTRY_DSN')
+if sentry_dsn and '@' in sentry_dsn:
     sentry_sdk.init(
-        dsn=os.environ.get('SENTRY_DSN'),
+        dsn=sentry_dsn,
         integrations=[FlaskIntegration()],
         traces_sample_rate=0.1,
         environment=os.environ.get('FLASK_ENV', 'development')
     )
 
-def create_app(config_name=None):
+def create_app(config_object=None):
     """Application factory pattern"""
     app = Flask(__name__)
     
     # Load configuration
-    if config_name is None:
+    if config_object is not None:
+        app.config.from_object(config_object)
+    else:
         config_name = os.environ.get('FLASK_ENV', 'default')
     app.config.from_object(get_config())
     
@@ -62,7 +66,7 @@ def create_app(config_name=None):
     stripe.api_key = app.config.get('STRIPE_SECRET_KEY')
     
     # Production-specific setup
-    if config_name == 'production':
+    if app.config.get('ENV') == 'production':
         get_config().init_app(app)
     
     return app
@@ -186,9 +190,17 @@ def register_routes(app):
                 db.session.add(user)
                 db.session.commit()
                 
-                # Send verification email
+                # Send verification email (keep as is)
                 send_verification_email(user)
-                send_welcome_email(user)
+                
+                # Send welcome email asynchronously, log but do not break flow
+                from threading import Thread
+                def send_welcome():
+                    try:
+                        EmailSender.send_welcome_email(user.email)
+                    except Exception as e:
+                        app.logger.warning(f"Failed to send welcome email: {e}")
+                Thread(target=send_welcome).start()
                 
                 flash('Account created! Please check your email to verify your account.', 'success')
                 return redirect(url_for('login'))
@@ -204,6 +216,7 @@ def register_routes(app):
         return render_template('register.html')
     
     @app.route('/login', methods=['GET', 'POST'])
+    @limiter.limit("5 per minute", key_func=get_remote_address)
     def login():
         """User login with security logging"""
         if current_user.is_authenticated:
@@ -228,7 +241,7 @@ def register_routes(app):
                 flash('Logged in successfully.', 'success')
                 return redirect(url_for('form'))
             else:
-                log_security_event('failed_login', None, f"Failed login attempt for {email}")
+                # log_security_event('failed_login', None, f"Failed login attempt for {email}")
                 flash('Invalid email or password.', 'error')
         
         return render_template('login.html')
@@ -265,7 +278,16 @@ def register_routes(app):
             user = User.query.filter_by(email=email).first()
             
             if user:
-                send_password_reset_email(user)
+                # Send password reset email asynchronously, log but do not break flow
+                from threading import Thread
+                def send_reset():
+                    try:
+                        reset_link = url_for('reset_password', token=user.generate_reset_token(), _external=True)
+                        db.session.commit()  # Save token
+                        EmailSender.send_password_reset_email(user.email, reset_link)
+                    except Exception as e:
+                        app.logger.warning(f"Failed to send password reset email: {e}")
+                Thread(target=send_reset).start()
                 flash('Password reset instructions sent to your email.', 'success')
             else:
                 # Don't reveal if email exists
@@ -383,6 +405,7 @@ def register_routes(app):
     
     @app.route('/api/proposals')
     @login_required
+    @limiter.limit("30 per minute")
     def api_proposals():
         """API endpoint for user proposals"""
         page = request.args.get('page', 1, type=int)
@@ -401,20 +424,14 @@ def register_routes(app):
     
     @app.errorhandler(404)
     def not_found_error(error):
-        return render_template('errors/404.html'), 404
+        return render_template('errors/404.html', error=error), 404
     
     @app.errorhandler(500)
     def internal_error(error):
-        db.session.rollback()
-        return render_template('errors/500.html'), 500
-
-# Create the application instance
-app = create_app()
-
-# Initialize database tables
-with app.app_context():
-    db.create_all()
+        return render_template('errors/500.html', error=error), 500
 
 if __name__ == '__main__':
-    # Run the application
+    app = create_app()
+    with app.app_context():
+        db.create_all()
     app.run(debug=app.config.get('DEBUG', False))

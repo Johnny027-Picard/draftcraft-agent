@@ -77,6 +77,9 @@ MAIL_USERNAME=your-email@gmail.com
 MAIL_PASSWORD=your-app-password
 MAIL_DEFAULT_SENDER=your-email@gmail.com
 
+# SendGrid Configuration (for password reset and welcome emails)
+SENDGRID_API_KEY=your-sendgrid-api-key
+
 # Redis Configuration
 REDIS_URL=redis://localhost:6379/0
 
@@ -290,3 +293,28 @@ For support and questions:
 - Monitor logs for suspicious activity
 - Use strong, unique passwords for all services
 - Enable two-factor authentication where possible 
+
+---
+
+**Note:**
+- The app uses two email systems: Flask-Mail (SMTP) for verification and some notifications, and SendGrid for password reset and welcome emails.
+- If deploying on Render or another cloud platform, setting the `SENDGRID_API_KEY` as an environment variable in the dashboard is sufficient; you do not need it in your local `.env` unless you want to test SendGrid emails locally. 
+
+## 🔒 Security & Maintenance Enhancements
+
+### Automated Dependency Updates
+- If using GitHub, enable [Dependabot](https://docs.github.com/en/code-security/dependabot) for automated security PRs.
+
+### Security Scanning
+- Run [Bandit](https://bandit.readthedocs.io/en/latest/) regularly:
+  ```bash
+  pip install bandit
+  bandit -r .
+  ```
+
+### Password Policy
+- Passwords must be at least 8 characters, contain upper and lower case letters, a number, and a special character.
+
+### Rate Limiting
+- Login attempts: 5 per minute per IP.
+- API requests: 30 per minute per user. 

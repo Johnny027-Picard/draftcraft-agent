@@ -61,6 +61,8 @@ class User(db.Model):
             raise ValueError('Password must contain at least one lowercase letter')
         if not re.search(r'\d', password):
             raise ValueError('Password must contain at least one number')
+        if not re.search(r'[^a-zA-Z0-9]', password):
+            raise ValueError('Password must contain at least one special character')
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):

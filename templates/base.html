@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/favicon.ico">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MK9RWG06HD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MK9RWG06HD');
+    </script>
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -42,8 +50,36 @@
 <footer class="footer mt-auto py-3 bg-light border-top">
   <div class="container text-center">
     <span class="text-muted">&copy; 2024 DraftCraft Agent. All rights reserved.</span>
+    <span class="footer-links">
+      | <a href="/privacy.html">Privacy Policy</a>
+      | <a href="/terms.html">Terms of Service</a>
+    </span>
   </div>
 </footer>
+<script>
+  // Cookie consent banner
+  (function() {
+    if (!localStorage.getItem('cookieConsent')) {
+      var banner = document.createElement('div');
+      banner.id = 'cookie-consent-banner';
+      banner.style.position = 'fixed';
+      banner.style.bottom = '0';
+      banner.style.left = '0';
+      banner.style.width = '100%';
+      banner.style.background = '#222';
+      banner.style.color = '#fff';
+      banner.style.padding = '16px 0';
+      banner.style.textAlign = 'center';
+      banner.style.zIndex = '9999';
+      banner.innerHTML = 'We use cookies to improve your experience and analyze traffic with Google Analytics. <button id="accept-cookies" style="margin-left:16px;padding:6px 18px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;">Accept</button>';
+      document.body.appendChild(banner);
+      document.getElementById('accept-cookies').onclick = function() {
+        localStorage.setItem('cookieConsent', 'true');
+        banner.style.display = 'none';
+      };
+    }
+  })();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% block scripts %}{% endblock %}
 </body>
