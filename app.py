@@ -362,6 +362,14 @@ def register_routes(app):
     def create_checkout_session():
         """Create Stripe checkout session"""
         try:
+            # Debug logging
+            app.logger.info(f"Creating checkout session for user {current_user.id}")
+            app.logger.info(f"Stripe secret key: {app.config.get('STRIPE_SECRET_KEY')[:10]}...")
+            app.logger.info(f"Price ID: {app.config.get('STRIPE_PREMIUM_PRICE_ID')}")
+            
+            # Configure Stripe
+            stripe.api_key = app.config.get('STRIPE_SECRET_KEY')
+            
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
@@ -374,10 +382,11 @@ def register_routes(app):
                 cancel_url=url_for('pricing', _external=True),
                 metadata={'user_id': current_user.id}
             )
+            app.logger.info(f"Checkout session created: {session.id}")
             return jsonify({'id': session.id})
         except Exception as e:
             app.logger.error(f"Stripe checkout error: {e}")
-            return jsonify({'error': 'Payment session creation failed'}), 500
+            return jsonify({'error': str(e)}), 500
     
     @app.route('/stripe/webhook', methods=['POST'])
     def stripe_webhook():
