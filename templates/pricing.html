@@ -50,7 +50,14 @@
 <script>
   const stripe = Stripe("{{ stripe_public_key }}");
   document.getElementById('checkout-button').addEventListener('click', function () {
-    fetch("/create-checkout-session", { method: "POST" })
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    fetch("/create-checkout-session", { 
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      }
+    })
       .then((res) => res.json())
       .then((data) => stripe.redirectToCheckout({ sessionId: data.id }));
   });

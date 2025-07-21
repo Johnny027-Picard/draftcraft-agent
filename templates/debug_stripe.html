@@ -78,11 +78,15 @@
                 const stripe = Stripe(stripeKey);
                 console.log('Stripe initialized successfully');
                 
+                // Get CSRF token from meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                
                 // Test checkout session creation
                 fetch("/create-checkout-session", { 
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
                     }
                 })
                 .then((res) => {
