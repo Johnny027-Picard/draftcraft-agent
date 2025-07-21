@@ -18,6 +18,10 @@ SECRET_KEY=your_flask_secret_key
 # Database Configuration
 DATABASE_URL=your_database_url
 
+# Google OAuth Configuration
+GOOGLE_OAUTH_CLIENT_ID=your_google_client_id
+GOOGLE_OAUTH_CLIENT_SECRET=your_google_client_secret
+
 # Other Configuration
 FLASK_ENV=development
 DEBUG=True 

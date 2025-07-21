@@ -24,3 +24,4 @@ pytest-cov==4.1.0
 black==23.11.0
 flake8==6.1.0
 sendgrid==6.11.0
+Flask-Dance==6.2.0

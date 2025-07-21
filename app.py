@@ -11,6 +11,7 @@ from flask_mail import Mail
 import stripe
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from flask_dance.contrib.google import make_google_blueprint, google
 
 # Import our modules
 from config import get_config, get_openai_api_key
@@ -58,6 +59,15 @@ def create_app(config_object=None):
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, int(user_id))
+    
+    # Flask-Dance Google OAuth blueprint
+    google_bp = make_google_blueprint(
+        client_id=app.config.get('GOOGLE_OAUTH_CLIENT_ID'),
+        client_secret=app.config.get('GOOGLE_OAUTH_CLIENT_SECRET'),
+        scope=["profile", "email"],
+        redirect_url="/login/google/authorized"
+    )
+    app.register_blueprint(google_bp, url_prefix="/login")
     
     # Register blueprints and routes
     register_routes(app)
@@ -246,6 +256,31 @@ def register_routes(app):
         
         return render_template('login.html')
     
+    @app.route('/login/google')
+    def login_google():
+        if not google.authorized:
+            return redirect(url_for('google.login'))
+        resp = google.get('/oauth2/v2/userinfo')
+        if not resp.ok:
+            flash('Failed to fetch user info from Google.', 'error')
+            return redirect(url_for('login'))
+        info = resp.json()
+        email = info.get('email')
+        name = info.get('name')
+        if not email:
+            flash('Google account has no email.', 'error')
+            return redirect(url_for('login'))
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(email=email, is_verified=True)
+            user.set_password(os.urandom(16).hex())  # random password
+            db.session.add(user)
+        user.last_login = datetime.utcnow()
+        db.session.commit()
+        login_user(user, remember=True)
+        flash('Logged in with Google.', 'success')
+        return redirect(url_for('dashboard'))
+    
     @app.route('/logout')
     @login_required
     def logout():
@@ -253,7 +288,7 @@ def register_routes(app):
         app.logger.info(f"User {current_user.id} logged out")
         logout_user()
         flash('You have been logged out.', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
     
     @app.route('/verify-email/<token>')
     def verify_email(token):

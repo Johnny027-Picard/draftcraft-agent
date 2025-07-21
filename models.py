@@ -144,6 +144,13 @@ class Proposal(db.Model):
             'is_favorite': self.is_favorite
         }
 
+class LoginHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, index=True)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    ip_address = db.Column(db.String(45))
+    user_agent = db.Column(db.String(256))
+
 # Event listeners for automatic actions
 @event.listens_for(User, 'before_insert')
 def set_user_defaults(mapper, connection, target):

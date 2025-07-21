@@ -68,6 +68,10 @@ class Config:
     # Domain settings
     DOMAIN = os.environ.get('DOMAIN', 'draftcraftagent.com')
 
+    # Google OAuth
+    GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
+    GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET')
+
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True
